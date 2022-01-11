@@ -28,6 +28,7 @@ h3 {
     width: 25px;
     height: 25px;
 }
+
 .tireur {
     background: url(ressources/vaisseau.png);
     transform: rotate(180deg);
@@ -44,4 +45,21 @@ h3 {
 }
 .laser {
     background-color: orange;
+}
+
+.enemy-container {
+    position: relative;
+    height: 50% !important;
+    width: 100% !important;
+    background-color: blue;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.enemy-column {
+    width: auto !important;
+    display: flex;
+    flex-direction: row;
+    position: absolute;
 }
