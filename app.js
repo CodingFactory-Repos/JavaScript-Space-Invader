@@ -38,32 +38,45 @@ function initializeGame() {
 function initializeAliens() {
     // Move aliens to left and right
     let moveToLeft = false;
+    let endGame = false;
     const gameEnemiesContainer = document.querySelectorAll('.enemy-column');
 
     setInterval(() => {
         gameEnemiesContainer.forEach(enemyColumn => {
             const enemyColumnLeft = parseInt(enemyColumn.style.left.replace('%', ''));
             const enemyColumnTop = parseInt(enemyColumn.style.top.replace('%', ''));
+            if (!endGame) {
+                if (!moveToLeft) {
+                    if (enemyColumnLeft < 40) {
+                        enemyColumn.style.left = `${enemyColumnLeft + 1}%`;
+                    } else if (enemyColumnTop < 150) {
+                        console.log(enemyColumnTop)
+                        enemyColumn.style.top = `${enemyColumnTop + 10}%`;
+                        enemyColumn.style.left = `${enemyColumnLeft}`;
+                        setTimeout(() => {
+                            moveToLeft = true;
+                        }, 50);
+                    } else if (enemyColumnTop === 150) {
+                        enemyColumn.style.left = `20%`;
 
-            if (!moveToLeft) {
-                if (enemyColumnLeft < 40) {
-                    enemyColumn.style.left = `${enemyColumnLeft + 1}%`;
+                    }
                 } else {
-                    enemyColumn.style.top = `${enemyColumnTop + 3}%`;
-                    enemyColumn.style.left = `${enemyColumnLeft}`;
-                    setTimeout(() => {
-                        moveToLeft = true;
-                    }, 50);
-                }
-            } else {
-                if (enemyColumnLeft > 0) {
-                    enemyColumn.style.left = `${enemyColumnLeft - 1}%`;
-                } else {
-                    enemyColumn.style.top = `${enemyColumnTop + 3}%`;
-                    enemyColumn.style.left = `${enemyColumnLeft}`;
-                    setTimeout(() => {
-                        moveToLeft = false;
-                    }, 50)
+                    if (enemyColumnLeft > 0) {
+                        enemyColumn.style.left = `${enemyColumnLeft - 1}%`;
+                    } else if (enemyColumnTop < 150) {
+                        console.log(enemyColumnTop)
+                        enemyColumn.style.top = `${enemyColumnTop + 10}%`;
+                        enemyColumn.style.left = `${enemyColumnLeft}`;
+                        setTimeout(() => {
+                            moveToLeft = false;
+                        }, 50)
+                    } else if (enemyColumnTop === 150) {
+                        enemyColumn.style.left = `22.5%`;
+                        setTimeout(() => {
+                            endGame = true;
+                        }, 50);
+
+                    }
                 }
             }
         });
@@ -94,6 +107,13 @@ function sendShoot() {
         const bulletTop = parseInt(bullet.style.bottom.replace('%', ''));
         bullet.style.bottom = `${bulletTop + 1}%`;
     }, 50);
+
+
+
+
+
+
+
 }
 
 async function startScript(responseTime) {
@@ -119,12 +139,17 @@ function movePlayer(direction, responseTime) {
         }
     } else if (direction === 'up') {
         sendShoot();
+
         console.log("Player shooted (" + (new Date().getTime() - responseTime) + "ms)");
     }
 
 }
 
+
+
+
 function checkKey(e) {
+
     // Move the player if the key is pressed
     switch (e.keyCode) {
         case 37:
