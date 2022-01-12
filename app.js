@@ -1,3 +1,14 @@
+/*
+ * GLOBAL VARIABLES
+ */
+
+let canShoot = true;
+let levelDifficulty = 5;
+
+/*
+* END GLOBAL VARIABLES
+*/
+
 function initializeGame() {
     // Initialize variables
     const gameFrame = document.querySelector('.grille');
@@ -48,7 +59,7 @@ function initializeAliens() {
                     if (enemyColumnLeft < 40) {
                         enemyColumn.style.left = `${enemyColumnLeft + 1}%`;
                     } else if (enemyColumnTop < 150) {
-                        enemyColumn.style.top = `${enemyColumnTop + 10}%`;
+                        enemyColumn.style.top = `${enemyColumnTop + levelDifficulty}%`;
                         enemyColumn.style.left = `${enemyColumnLeft}`;
                         setTimeout(() => {
                             moveToLeft = true;
@@ -61,7 +72,7 @@ function initializeAliens() {
                     if (enemyColumnLeft > 0) {
                         enemyColumn.style.left = `${enemyColumnLeft - 1}%`;
                     } else if (enemyColumnTop < 150) {
-                        enemyColumn.style.top = `${enemyColumnTop + 10}%`;
+                        enemyColumn.style.top = `${enemyColumnTop + levelDifficulty}%`;
                         enemyColumn.style.left = `${enemyColumnLeft}`;
                         setTimeout(() => {
                             moveToLeft = false;
@@ -71,9 +82,10 @@ function initializeAliens() {
                         setTimeout(() => {
                             endGame = true;
                         }, 50);
-
                     }
                 }
+            } else {
+                document.querySelector('.grille').innerHTML = "Game Over!";
             }
         });
     }, 50);
@@ -134,8 +146,6 @@ function movePlayer(direction, responseTime) {
 
 }
 
-let canShoot = true;
-
 function checkKey(e) {
 
     // Move the player if the key is pressed
@@ -149,7 +159,7 @@ function checkKey(e) {
                 canShoot = false;
                 setTimeout(() => {
                     canShoot = true;
-                }, 500);
+                }, 100);
             }
             break;
         case 39:
@@ -160,37 +170,44 @@ function checkKey(e) {
     }
 }
 
-
 document.addEventListener(`DOMContentLoaded`, (async) => {
     startScript(new Date().getTime());
     document.onkeydown = checkKey;
 
+    const gameStartedAt = new Date().getTime();
+
     // Check if bullet hit an alien
     setInterval(() => {
+        // Get all bullets positions X, Y
         const bullets = document.querySelectorAll('.bullet');
-        bullets.forEach(bullet => {
-            const bulletBottom = parseInt(bullet.style.bottom.replace('%', ''));
-            const bulletLeft = parseInt(bullet.style.left.replace('%', ''));
+        const aliens = document.querySelectorAll('.alien');
 
-            if (bulletBottom > 100) {
+        bullets.forEach(bullet => {
+            // If bullet bottom is greater than 100%
+            if (parseInt(bullet.style.bottom.replace('%', '')) > 100) {
+                // Remove the bullet
                 bullet.remove();
             } else {
-                const aliens = document.querySelectorAll('.alien');
-                const aliensColumns = document.querySelectorAll('.enemy-column');
+                // Get bullet position X, Y in the screen
+                const bulletX = bullet.getBoundingClientRect().left + window.scrollX;
+                const bulletY = bullet.getBoundingClientRect().top + window.scrollY;
 
-                aliensColumns.forEach(aliensColumns => {
-                    const aliensColumnsLeft = parseInt(aliensColumns.style.left.replace('%', ''));
-                    const aliensColumnsTop = parseInt(aliensColumns.style.top.replace('%', ''));
+                // Check if bullet hit an alien
+                aliens.forEach(alien => {
+                    // Get alien position X, Y in the screen
+                    const alienX = alien.getBoundingClientRect().left + window.scrollX;
+                    const alienY = alien.getBoundingClientRect().top + window.scrollY;
 
-                    console.log(`${bulletLeft} = ${aliensColumnsLeft}`);
-
-                    if (bulletLeft === aliensColumnsLeft) {
-                        aliens.forEach(alien => {
-                            alien.remove();
-                            bullet.remove();
-                        });
-
+                    // If the bullet is in the alien
+                    if (bulletX > alienX && bulletX < (alienX + alien.offsetWidth) && bulletY > alienY && bulletY < (alienY + alien.offsetHeight) && alien.style.opacity !== '0') {
+                        // Remove the bullet
                         bullet.remove();
+                        // Remove the alien
+                        alien.style.opacity = 0;
+
+                        const score = document.querySelector('.score');
+                        const scoreValue = parseInt(score.innerHTML);
+                        score.innerHTML = (scoreValue + levelDifficulty);
                     }
                 });
             }
