@@ -13,6 +13,7 @@ function initializeGame() {
         const enemyColumn = document.createElement('div');
         enemyColumn.classList.add('enemy-column');
         enemyColumn.classList.add('enemy-column-' + i);
+        enemyColumn.style.left = '0%';
         enemyColumn.style.marginTop = `${i * 25}px`;
         gameEnemiesContainer.appendChild(enemyColumn);
 
@@ -29,17 +30,70 @@ function initializeGame() {
     const player = document.createElement('div');
     player.classList.add('tireur');
     player.style.left = '50%';
+    player.style.top = '75%';
     gamePlayerContainer.appendChild(player);
+}
+
+function initializeAliens() {
+    // Move aliens to left and right
+    let moveToLeft = false;
+    const gameEnemiesContainer = document.querySelectorAll('.enemy-column');
+
+    setInterval(() => {
+        gameEnemiesContainer.forEach(enemyColumn => {
+            const enemyColumnLeft = parseInt(enemyColumn.style.left.replace('%', ''));
+
+            if(!moveToLeft){
+                if (enemyColumnLeft < 40) {
+                    enemyColumn.style.left = `${enemyColumnLeft + 1}%`;
+                } else {
+                    moveToLeft = true;
+                }
+            } else {
+                if (enemyColumnLeft > 0) {
+                    enemyColumn.style.left = `${enemyColumnLeft - 1}%`;
+                } else {
+                    moveToLeft = false;
+                }
+            }
+        });
+    }, 50);
+
+}
+
+function sendShoot() {
+    // Create the bullet
+    const bullet = document.createElement('div');
+    bullet.classList.add('bullet');
+
+    // Get actual player position
+    const player = document.querySelector('.tireur');
+    const playerLeft = player.style.left;
+    const playerTop = player.style.top;
+
+    bullet.style.left = playerLeft;
+    bullet.style.bottom = 90 - parseInt(playerTop.replace('%', '')) + '%';
+    bullet.style.position = 'absolute';
+
+    // Add the bullet to the game-frame div
+    const gameFrame = document.querySelector('.grille');
+    gameFrame.appendChild(bullet);
+
+    // Move the bullet
+    setInterval(() => {
+        const bulletTop = parseInt(bullet.style.bottom.replace('%', ''));
+        bullet.style.bottom = `${bulletTop + 1}%`;
+    }, 50);
 }
 
 async function startScript(responseTime) {
     await initializeGame();
     console.log("Game initialized (" + (new Date().getTime() - responseTime) + "ms)");
+    await initializeAliens();
 }
 
 function movePlayer(direction, responseTime) {
     const player = document.querySelector('.tireur');
-    const playerPosition = player.getBoundingClientRect();
     const playerLeft = parseInt(player.style.left.replace('%', ''));
     const speed = 5;
 
@@ -53,6 +107,9 @@ function movePlayer(direction, responseTime) {
             player.style.left = `${playerLeft + speed}%`;
             console.log("Player moved right (" + (new Date().getTime() - responseTime) + "ms)");
         }
+    } else if (direction === 'up') {
+        sendShoot();
+        console.log("Player shooted (" + (new Date().getTime() - responseTime) + "ms)");
     }
 
 }
