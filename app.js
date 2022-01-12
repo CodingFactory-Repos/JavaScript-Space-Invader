@@ -43,7 +43,7 @@ function initializeAliens() {
         gameEnemiesContainer.forEach(enemyColumn => {
             const enemyColumnLeft = parseInt(enemyColumn.style.left.replace('%', ''));
 
-            if(!moveToLeft){
+            if (!moveToLeft) {
                 if (enemyColumnLeft < 40) {
                     enemyColumn.style.left = `${enemyColumnLeft + 1}%`;
                 } else {
@@ -98,12 +98,12 @@ function movePlayer(direction, responseTime) {
     const speed = 5;
 
     if (direction === 'left') {
-        if((playerLeft - speed) > (0 - speed)){
+        if ((playerLeft - speed) > (0 - speed)) {
             player.style.left = `${playerLeft - speed}%`;
             console.log("Player moved left (" + (new Date().getTime() - responseTime) + "ms)");
         }
     } else if (direction === 'right') {
-        if((playerLeft + speed) < 100){
+        if ((playerLeft + speed) < 100) {
             player.style.left = `${playerLeft + speed}%`;
             console.log("Player moved right (" + (new Date().getTime() - responseTime) + "ms)");
         }
