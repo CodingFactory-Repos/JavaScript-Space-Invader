@@ -34,6 +34,7 @@ h3 {
     transform: rotate(180deg);
     background-position: center;
     background-size: contain;
+    position: absolute;
 }
 
 .alien {
