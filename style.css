@@ -104,3 +104,19 @@ h3 {
     height: 15px !important;
     border-radius: 10px;
 }
+
+.score {
+    position: absolute;
+    top: 80%;
+    left: 0;
+    width: 20%;
+    height: 20%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.651);
+    color: rgb(255, 0, 0);
+    font-size: 3em;
+    font-weight: bold;
+    text-shadow: 0 0 10px black;
+}
