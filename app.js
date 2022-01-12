@@ -4,8 +4,6 @@ function initializeGame() {
     const gameEnemiesContainer = document.querySelector('.enemy-container');
     const gamePlayerContainer = document.querySelector('.player-container');
 
-    console.log(gameFrame);
-
     // Initialize the game
     // Show 3 lines of 12 enemys
     for (let i = 0; i < 3; i++) {
@@ -50,7 +48,6 @@ function initializeAliens() {
                     if (enemyColumnLeft < 40) {
                         enemyColumn.style.left = `${enemyColumnLeft + 1}%`;
                     } else if (enemyColumnTop < 150) {
-                        console.log(enemyColumnTop)
                         enemyColumn.style.top = `${enemyColumnTop + 10}%`;
                         enemyColumn.style.left = `${enemyColumnLeft}`;
                         setTimeout(() => {
@@ -64,7 +61,6 @@ function initializeAliens() {
                     if (enemyColumnLeft > 0) {
                         enemyColumn.style.left = `${enemyColumnLeft - 1}%`;
                     } else if (enemyColumnTop < 150) {
-                        console.log(enemyColumnTop)
                         enemyColumn.style.top = `${enemyColumnTop + 10}%`;
                         enemyColumn.style.left = `${enemyColumnLeft}`;
                         setTimeout(() => {
@@ -107,13 +103,6 @@ function sendShoot() {
         const bulletTop = parseInt(bullet.style.bottom.replace('%', ''));
         bullet.style.bottom = `${bulletTop + 1}%`;
     }, 50);
-
-
-
-
-
-
-
 }
 
 async function startScript(responseTime) {
@@ -145,9 +134,6 @@ function movePlayer(direction, responseTime) {
 
 }
 
-
-
-
 function checkKey(e) {
 
     // Move the player if the key is pressed
@@ -167,4 +153,36 @@ function checkKey(e) {
 document.addEventListener(`DOMContentLoaded`, (async) => {
     startScript(new Date().getTime());
     document.onkeydown = checkKey;
+
+    // Check if bullet hit an alien
+    setInterval(() => {
+        const bullets = document.querySelectorAll('.bullet');
+        bullets.forEach(bullet => {
+            const bulletBottom = parseInt(bullet.style.bottom.replace('%', ''));
+            const bulletLeft = parseInt(bullet.style.left.replace('%', ''));
+
+            if (bulletBottom > 100) {
+                bullet.remove();
+            } else {
+                const aliens = document.querySelectorAll('.alien');
+                const aliensColumns = document.querySelectorAll('.enemy-column');
+
+                aliensColumns.forEach(aliensColumns => {
+                    const aliensColumnsLeft = parseInt(aliensColumns.style.left.replace('%', ''));
+                    const aliensColumnsTop = parseInt(aliensColumns.style.top.replace('%', ''));
+
+                    console.log(`${bulletLeft} = ${aliensColumnsLeft}`);
+
+                    if (bulletLeft === aliensColumnsLeft) {
+                        aliens.forEach(alien => {
+                            alien.remove();
+                            bullet.remove();
+                        });
+
+                        bullet.remove();
+                    }
+                });
+            }
+        });
+    }, 50);
 });
