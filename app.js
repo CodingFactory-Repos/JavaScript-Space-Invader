@@ -134,6 +134,8 @@ function movePlayer(direction, responseTime) {
 
 }
 
+let canShoot = true;
+
 function checkKey(e) {
 
     // Move the player if the key is pressed
@@ -142,13 +144,22 @@ function checkKey(e) {
             movePlayer('left', new Date().getTime());
             break;
         case 38:
-            movePlayer('up', new Date().getTime());
+            if (canShoot) {
+                movePlayer('up', new Date().getTime());
+                canShoot = false;
+                setTimeout(() => {
+                    canShoot = true;
+                }, 500);
+            }
             break;
         case 39:
             movePlayer('right', new Date().getTime());
             break;
+        default:
+            break;
     }
 }
+
 
 document.addEventListener(`DOMContentLoaded`, (async) => {
     startScript(new Date().getTime());
