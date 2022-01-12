@@ -14,6 +14,7 @@ function initializeGame() {
         enemyColumn.classList.add('enemy-column');
         enemyColumn.classList.add('enemy-column-' + i);
         enemyColumn.style.left = '0%';
+        enemyColumn.style.top = '0%';
         enemyColumn.style.marginTop = `${i * 25}px`;
         gameEnemiesContainer.appendChild(enemyColumn);
 
@@ -42,18 +43,27 @@ function initializeAliens() {
     setInterval(() => {
         gameEnemiesContainer.forEach(enemyColumn => {
             const enemyColumnLeft = parseInt(enemyColumn.style.left.replace('%', ''));
+            const enemyColumnTop = parseInt(enemyColumn.style.top.replace('%', ''));
 
             if (!moveToLeft) {
                 if (enemyColumnLeft < 40) {
                     enemyColumn.style.left = `${enemyColumnLeft + 1}%`;
                 } else {
-                    moveToLeft = true;
+                    enemyColumn.style.top = `${enemyColumnTop + 3}%`;
+                    enemyColumn.style.left = `${enemyColumnLeft}`;
+                    setTimeout(() => {
+                        moveToLeft = true;
+                    }, 50);
                 }
             } else {
                 if (enemyColumnLeft > 0) {
                     enemyColumn.style.left = `${enemyColumnLeft - 1}%`;
                 } else {
-                    moveToLeft = false;
+                    enemyColumn.style.top = `${enemyColumnTop + 3}%`;
+                    enemyColumn.style.left = `${enemyColumnLeft}`;
+                    setTimeout(() => {
+                        moveToLeft = false;
+                    }, 50)
                 }
             }
         });
