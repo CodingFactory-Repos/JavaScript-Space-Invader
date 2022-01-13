@@ -1,7 +1,6 @@
 /*
  * GLOBAL VARIABLES
  */
-
 let canShoot = true;
 let levelDifficulty = 2;
 
@@ -74,9 +73,9 @@ function initializeAliens() {
                     stopAlien = true;
                     if (!moveToLeft) {
                         if (enemyColumnLeft < 40) {
-                            enemyColumn.style.left = `${enemyColumnLeft + 1}%`;
+                            enemyColumn.style.left = `${enemyColumnLeft + (1 * levelDifficulty)}%`;
                         } else if (enemyColumnTop < 150) {
-                            enemyColumn.style.top = `${enemyColumnTop + levelDifficulty}%`;
+                            enemyColumn.style.top = `${enemyColumnTop + 1}%`;
                             enemyColumn.style.left = `${enemyColumnLeft}`;
                             setTimeout(() => {
                                 moveToLeft = true;
@@ -87,9 +86,9 @@ function initializeAliens() {
                         }
                     } else {
                         if (enemyColumnLeft > 0) {
-                            enemyColumn.style.left = `${enemyColumnLeft - 1}%`;
+                            enemyColumn.style.left = `${enemyColumnLeft - (1 * levelDifficulty)}%`;
                         } else if (enemyColumnTop < 150) {
-                            enemyColumn.style.top = `${enemyColumnTop + levelDifficulty}%`;
+                            enemyColumn.style.top = `${enemyColumnTop + 1}%`;
                             enemyColumn.style.left = `${enemyColumnLeft}`;
                             setTimeout(() => {
                                 moveToLeft = false;
@@ -101,7 +100,6 @@ function initializeAliens() {
                             }, 50);
                         }
                     }
-
 
 
 
