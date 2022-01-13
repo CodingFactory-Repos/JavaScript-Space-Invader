@@ -50,6 +50,7 @@ function initializeAliens() {
     let moveToLeft = false;
     let endGame = false;
     let stopAlien = false;
+    let createBtn = false;
     const gameEnemiesContainer = document.querySelectorAll('.enemy-column');
 
     let myGame = setInterval(() => {
@@ -113,8 +114,11 @@ function initializeAliens() {
 
             } else if (!stopAlien && endGame) {
                 clearInterval(myGame);
-                document.querySelector('.grille').innerHTML = `<p class='message'>Game over !</p>`;
-                createRestartButton();
+                if (!createBtn) {
+                    document.querySelector('.grille').innerHTML = `<p class='message'>Game over !</p>`;
+                    createRestartButton();
+                    createBtn = true;
+                }
             }
 
 
