@@ -9,7 +9,7 @@ body {
     border: 1px solid #000;
     width: 500px;
     height: 500px;
-    margin: 0 auto;
+    margin: 10% auto 0 auto;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
     background: url(ressources/Images/Space.png);
     background-position: center;
@@ -107,7 +107,7 @@ h3 {
 
 .score {
     position: absolute;
-    top: 80%;
+    bottom: 0;
     left: 0;
     width: 20%;
     height: 20%;
@@ -119,6 +119,17 @@ h3 {
     font-size: 3em;
     font-weight: bold;
     text-shadow: 0 0 10px black;
+    margin: 0;
+}
+
+.score .multiplier {
+    font-size: 16px;
+    color: goldenrod;
+    margin-left: 10px;
+    rotate: 15deg;
+    position: absolute;
+    top: 30%;
+    left: 50%;
 }
 
 .message {

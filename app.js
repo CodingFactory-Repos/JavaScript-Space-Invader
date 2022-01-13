@@ -2,7 +2,7 @@
  * GLOBAL VARIABLES
  */
 let canShoot = true;
-let levelDifficulty = 2;
+let levelDifficulty = 1;
 
 
 /*
@@ -106,10 +106,8 @@ function initializeAliens() {
 
                     aliens.forEach(alien => {
                         if (alien.style.opacity !== '0') {
-                            console.log('still alive')
                             stopAlien = false;
                         }
-                        console.log(stopAlien);
                     });
                 } else if (stopAlien) {
 
@@ -122,8 +120,14 @@ function initializeAliens() {
             } else if (!stopAlien && endGame) {
                 clearInterval(myGame);
                 if (!createBtn) {
-                    document.querySelector('.grille').innerHTML = `<p class='message'>Game over !</p>`;
-                    createRestartButton();
+                    document.querySelector('.enemy-container').innerHTML = '';
+                    document.querySelector('.player-container').innerHTML = '';
+
+                    document.querySelector('.grille').innerHTML += `<p class='message'>Game over !</p>`;
+
+                    levelDifficulty = 1;
+
+                    createRestartButton("Recommencer ?");
                     createBtn = true;
                 }
             }
@@ -216,8 +220,7 @@ function checkKey(e) {
     }
 }
 
-function createRestartButton() {
-
+function createRestartButton(text) {
     let createBtn = false;
     let createDiv = true;
     const btnRestart = document.createElement('div');
@@ -228,27 +231,42 @@ function createRestartButton() {
         createDiv = false;
         createBtn = true;
     }
+
     if (createBtn) {
         const restartButton = document.createElement('button');
         restartButton.classList.add('restartBtn');
-        restartButton.innerHTML = 'Restart';
+        restartButton.innerHTML = text;
         btnRestart.appendChild(restartButton);
     }
 
 }
-
-
-document.addEventListener('click', (e) => {
-    if (e.target.classList.contains('restartBtn')) {
-        location.reload();
-    }
-});
 
 document.addEventListener(`DOMContentLoaded`, (async) => {
     startScript(new Date().getTime());
     document.onkeydown = checkKey;
 
     const gameStartedAt = new Date().getTime();
+
+    // Check if the restart button is clicked
+    document.addEventListener('click', (e) => {
+        if (e.target.classList.contains('restartBtn')) {
+            if(levelDifficulty === 1){
+                const score = document.querySelector('.score-number');
+                score.innerHTML = `0`;
+            }
+
+            //Delete all bullets
+            const bullets = document.querySelectorAll('.bullet');
+            bullets.forEach(bullet => {
+                bullet.remove();
+            });
+
+            document.querySelector('.message').remove();
+            document.querySelector('.restartDiv').remove();
+
+            startScript(new Date().getTime());
+        }
+    });
 
     // Check if bullet hit an alien
     setInterval(() => {
@@ -296,17 +314,27 @@ document.addEventListener(`DOMContentLoaded`, (async) => {
 
 
                         if (!allInvisible) {
-                            document.querySelector('.grille').innerHTML = `<p class='message'>You win!</p>`;
-                            createRestartButton();
+                            document.querySelector('.enemy-container').innerHTML = '';
+                            document.querySelector('.player-container').innerHTML = '';
+
+                            document.querySelector('.grille').innerHTML += `<p class='message'>You win!</p>`;
+
+                            levelDifficulty++;
+
+                            createRestartButton("Passer au niveau suivant");
                         }
 
-                        const score = document.querySelector('.score');
+                        const score = document.querySelector('.score-number');
+                        const multiplier = document.querySelector('.multiplier');
                         const scoreValue = parseInt(score.innerHTML);
 
-                        // Time left to finish the game
-                        const timeLeft = (parseInt(bullet.style.bottom.replace('%', '')));
+                        console.log(multiplier.innerHTML)
 
-                        score.innerHTML = (scoreValue + levelDifficulty) + timeLeft;
+                        // Time left to finish the game
+                        const timeLeft = parseInt(bullet.style.bottom.replace('%', ''));
+
+                        multiplier.innerHTML = `+${levelDifficulty * timeLeft} !`;
+                        score.innerHTML = (levelDifficulty * timeLeft) + scoreValue ;
                     }
                 });
             }
