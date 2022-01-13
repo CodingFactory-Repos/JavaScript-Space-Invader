@@ -254,7 +254,11 @@ document.addEventListener(`DOMContentLoaded`, (async) => {
 
                         const score = document.querySelector('.score');
                         const scoreValue = parseInt(score.innerHTML);
-                        score.innerHTML = (scoreValue + levelDifficulty);
+
+                        // Time left to finish the game
+                        const timeLeft = (parseInt(bullet.style.bottom.replace('%', '')));
+
+                        score.innerHTML = (scoreValue + levelDifficulty) + timeLeft;
                     }
                 });
             }
