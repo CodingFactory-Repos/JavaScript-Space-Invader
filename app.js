@@ -3,11 +3,12 @@
  */
 
 let canShoot = true;
-let levelDifficulty = 5;
+let levelDifficulty = 2;
+
 
 /*
-* END GLOBAL VARIABLES
-*/
+ * END GLOBAL VARIABLES
+ */
 
 function initializeGame() {
     // Initialize variables
@@ -48,45 +49,75 @@ function initializeAliens() {
     // Move aliens to left and right
     let moveToLeft = false;
     let endGame = false;
+    let stopAlien = false;
     const gameEnemiesContainer = document.querySelectorAll('.enemy-column');
 
     setInterval(() => {
         gameEnemiesContainer.forEach(enemyColumn => {
             const enemyColumnLeft = parseInt(enemyColumn.style.left.replace('%', ''));
             const enemyColumnTop = parseInt(enemyColumn.style.top.replace('%', ''));
-            if (!endGame) {
-                if (!moveToLeft) {
-                    if (enemyColumnLeft < 40) {
-                        enemyColumn.style.left = `${enemyColumnLeft + 1}%`;
-                    } else if (enemyColumnTop < 150) {
-                        enemyColumn.style.top = `${enemyColumnTop + levelDifficulty}%`;
-                        enemyColumn.style.left = `${enemyColumnLeft}`;
-                        setTimeout(() => {
-                            moveToLeft = true;
-                        }, 50);
-                    } else if (enemyColumnTop === 150) {
-                        enemyColumn.style.left = `20%`;
+            const aliens = document.querySelectorAll('.alien');
 
+
+            if (!endGame) {
+                if (!stopAlien) {
+                    stopAlien = true;
+                    if (!moveToLeft) {
+                        if (enemyColumnLeft < 40) {
+                            enemyColumn.style.left = `${enemyColumnLeft + 1}%`;
+                        } else if (enemyColumnTop < 150) {
+                            enemyColumn.style.top = `${enemyColumnTop + levelDifficulty}%`;
+                            enemyColumn.style.left = `${enemyColumnLeft}`;
+                            setTimeout(() => {
+                                moveToLeft = true;
+                            }, 50);
+                        } else if (enemyColumnTop === 150) {
+                            enemyColumn.style.left = `20%`;
+
+                        }
+                    } else {
+                        if (enemyColumnLeft > 0) {
+                            enemyColumn.style.left = `${enemyColumnLeft - 1}%`;
+                        } else if (enemyColumnTop < 150) {
+                            enemyColumn.style.top = `${enemyColumnTop + levelDifficulty}%`;
+                            enemyColumn.style.left = `${enemyColumnLeft}`;
+                            setTimeout(() => {
+                                moveToLeft = false;
+                            }, 50)
+                        } else if (enemyColumnTop === 150) {
+                            enemyColumn.style.left = `22.5%`;
+                            setTimeout(() => {
+                                endGame = true;
+                            }, 50);
+                        }
                     }
-                } else {
-                    if (enemyColumnLeft > 0) {
-                        enemyColumn.style.left = `${enemyColumnLeft - 1}%`;
-                    } else if (enemyColumnTop < 150) {
-                        enemyColumn.style.top = `${enemyColumnTop + levelDifficulty}%`;
-                        enemyColumn.style.left = `${enemyColumnLeft}`;
-                        setTimeout(() => {
-                            moveToLeft = false;
-                        }, 50)
-                    } else if (enemyColumnTop === 150) {
-                        enemyColumn.style.left = `22.5%`;
-                        setTimeout(() => {
-                            endGame = true;
-                        }, 50);
-                    }
+
+
+
+
+
+                    aliens.forEach(alien => {
+                        if (alien.style.opacity !== '0') {
+                            console.log('still alive')
+                            stopAlien = false;
+                        }
+                        console.log(stopAlien);
+                    });
+                } else if (stopAlien) {
+
+                    enemyColumn.style.left = `${enemyColumnLeft}%`;
+                    enemyColumn.style.top = `${enemyColumnTop}%`;
+                    console.log('fin')
+                    return;
                 }
-            } else {
-                document.querySelector('.grille').innerHTML = "Game Over!";
+
+            } else if (!stopAlien && endGame) {
+                document.querySelector('.grille').innerHTML = `<p class='message'>Game over !</p>`;
             }
+
+
+
+
         });
     }, 50);
 
@@ -159,7 +190,7 @@ function checkKey(e) {
                 canShoot = false;
                 setTimeout(() => {
                     canShoot = true;
-                }, 100);
+                }, 1000);
             }
             break;
         case 39:
@@ -204,6 +235,22 @@ document.addEventListener(`DOMContentLoaded`, (async) => {
                         bullet.remove();
                         // Remove the alien
                         alien.style.opacity = 0;
+
+
+                        // Check if all aliens are invisible
+                        const aliens = document.querySelectorAll('.alien');
+                        let allInvisible = true;
+                        aliens.forEach(alien => {
+                            if (alien.style.opacity !== '0') {
+                                allInvisible = false;
+                            }
+                        });
+
+
+
+                        if (allInvisible) {
+                            document.querySelector('.grille').innerHTML = `<p class='message'>You win!</p>`;
+                        }
 
                         const score = document.querySelector('.score');
                         const scoreValue = parseInt(score.innerHTML);
