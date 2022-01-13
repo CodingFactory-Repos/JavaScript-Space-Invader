@@ -52,7 +52,7 @@ function initializeAliens() {
     let stopAlien = false;
     const gameEnemiesContainer = document.querySelectorAll('.enemy-column');
 
-    setInterval(() => {
+    let myGame = setInterval(() => {
         gameEnemiesContainer.forEach(enemyColumn => {
             const enemyColumnLeft = parseInt(enemyColumn.style.left.replace('%', ''));
             const enemyColumnTop = parseInt(enemyColumn.style.top.replace('%', ''));
@@ -107,12 +107,14 @@ function initializeAliens() {
 
                     enemyColumn.style.left = `${enemyColumnLeft}%`;
                     enemyColumn.style.top = `${enemyColumnTop}%`;
-                    console.log('fin')
+
                     return;
                 }
 
             } else if (!stopAlien && endGame) {
+                clearInterval(myGame);
                 document.querySelector('.grille').innerHTML = `<p class='message'>Game over !</p>`;
+                createRestartButton();
             }
 
 
@@ -201,6 +203,34 @@ function checkKey(e) {
     }
 }
 
+function createRestartButton() {
+
+    let createBtn = false;
+    let createDiv = true;
+    const btnRestart = document.createElement('div');
+    btnRestart.classList.add('restartDiv');
+
+    if (createDiv) {
+        document.body.appendChild(btnRestart);
+        createDiv = false;
+        createBtn = true;
+    }
+    if (createBtn) {
+        const restartButton = document.createElement('button');
+        restartButton.classList.add('restartBtn');
+        restartButton.innerHTML = 'Restart';
+        btnRestart.appendChild(restartButton);
+    }
+
+}
+
+
+document.addEventListener('click', (e) => {
+    if (e.target.classList.contains('restartBtn')) {
+        location.reload();
+    }
+});
+
 document.addEventListener(`DOMContentLoaded`, (async) => {
     startScript(new Date().getTime());
     document.onkeydown = checkKey;
@@ -250,6 +280,7 @@ document.addEventListener(`DOMContentLoaded`, (async) => {
 
                         if (allInvisible) {
                             document.querySelector('.grille').innerHTML = `<p class='message'>You win!</p>`;
+                            createRestartButton();
                         }
 
                         const score = document.querySelector('.score');
