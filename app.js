@@ -16,6 +16,11 @@ function initializeGame() {
     const gameEnemiesContainer = document.querySelector('.enemy-container');
     const gamePlayerContainer = document.querySelector('.player-container');
 
+    const music = document.createElement('audio');
+    music.src = 'ressources/Sounds/Music.mp3';
+    music.loop = true;
+    music.play();
+
     // Initialize the game
     // Show 3 lines of 12 enemys
     for (let i = 0; i < 3; i++) {
@@ -43,6 +48,9 @@ function initializeGame() {
     player.style.left = '50%';
     player.style.top = '75%';
     gamePlayerContainer.appendChild(player);
+
+    // Add the music
+
 }
 
 function initializeAliens() {
@@ -58,6 +66,7 @@ function initializeAliens() {
             const enemyColumnLeft = parseInt(enemyColumn.style.left.replace('%', ''));
             const enemyColumnTop = parseInt(enemyColumn.style.top.replace('%', ''));
             const aliens = document.querySelectorAll('.alien');
+
 
 
             if (!endGame) {
@@ -85,7 +94,7 @@ function initializeAliens() {
                             setTimeout(() => {
                                 moveToLeft = false;
                             }, 50)
-                        } else if (enemyColumnTop === 150) {
+                        } else if (enemyColumnTop >= 150) {
                             enemyColumn.style.left = `22.5%`;
                             setTimeout(() => {
                                 endGame = true;
@@ -177,7 +186,9 @@ function movePlayer(direction, responseTime) {
         }
     } else if (direction === 'up') {
         sendShoot();
-
+        // Play laser sound
+        const laserSound = new Audio('ressources/Sounds/Laser.mp3');
+        laserSound.play();
         console.log("Player shooted (" + (new Date().getTime() - responseTime) + "ms)");
     }
 
@@ -270,19 +281,23 @@ document.addEventListener(`DOMContentLoaded`, (async) => {
                         // Remove the alien
                         alien.style.opacity = 0;
 
+                        // Play explosion sounds
+                        const explosionSound = new Audio('ressources/Sounds/Explosion.mp3');
+                        explosionSound.play();
+
 
                         // Check if all aliens are invisible
                         const aliens = document.querySelectorAll('.alien');
-                        let allInvisible = true;
+                        let allInvisible = false;
                         aliens.forEach(alien => {
                             if (alien.style.opacity !== '0') {
-                                allInvisible = false;
+                                allInvisible = true;
                             }
                         });
 
 
 
-                        if (allInvisible) {
+                        if (!allInvisible) {
                             document.querySelector('.grille').innerHTML = `<p class='message'>You win!</p>`;
                             createRestartButton();
                         }

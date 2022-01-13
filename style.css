@@ -1,5 +1,5 @@
 body {
-    background: url(ressources/Cockpit.png) no-repeat center fixed;
+    background: url(ressources/Images/Cockpit.png) no-repeat center fixed;
     background-size: cover;
 }
 
@@ -11,7 +11,7 @@ body {
     height: 500px;
     margin: 0 auto;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-    background: url(ressources/Space.png);
+    background: url(ressources/Images/Space.png);
     background-position: center;
     animation: background-defile 30s linear infinite;
     position: relative;
@@ -38,7 +38,7 @@ h3 {
 }
 
 .tireur {
-    background: url(ressources/vaisseau.png);
+    background: url(ressources/Images/vaisseau.png);
     transform: rotate(180deg);
     background-position: center;
     background-size: contain;
@@ -46,7 +46,7 @@ h3 {
 }
 
 .alien {
-    background: url(ressources/ennemies.png);
+    background: url(ressources/Images/ennemies.png);
     background-position: center;
     background-size: contain;
 }
