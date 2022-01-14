@@ -96,7 +96,7 @@ function initializeAliens() {
                                     moveToLeft = true;
                                 }, 50);
                             } else if (enemyColumnTop === 150) {
-                                enemyColumn.style.left = `20%`;
+                                enemyColumn.style.left = `22.5%`;
 
                             }
                         } else {
@@ -215,6 +215,7 @@ function sendShoot() {
 }
 
 async function startScript(responseTime) {
+    maxHeight = 50;
     await initializeGame();
     console.log("Game initialized (" + (new Date().getTime() - responseTime) + "ms)");
     await initializeAliens();
