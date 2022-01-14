@@ -2,12 +2,12 @@
  * GLOBAL VARIABLES
  */
 let canShoot = true;
-let levelDifficulty = 1;
+let levelDifficulty = 3;
 const music = document.createElement('audio');
 music.src = 'ressources/Sounds/Music.mp3';
 music.loop = true;
 let musicPlayed = false;
-let delayTime = 1000;
+let delayTime = 100;
 let playSound = true;
 let minHeight = 85;
 let maxHeight = 50;
@@ -18,6 +18,7 @@ let maxHeight = 50;
  */
 
 function initializeGame() {
+
     // Initialize variables
     const gameFrame = document.querySelector('.grille');
     const gameEnemiesContainer = document.querySelector('.enemy-container');
@@ -30,6 +31,9 @@ function initializeGame() {
         music.currentTime = 0;
         music.play();
     }
+
+    minHeight = 85;
+    maxHeight = 50;
 
     // Initialize the game
     // Show 3 lines of 12 enemys
@@ -69,15 +73,19 @@ function initializeAliens() {
     let endGame = false;
     let stopAlien = false;
     let createBtn = false;
+    let player = document.querySelector('.tireur');
+
     const gameEnemiesContainer = document.querySelectorAll('.enemy-column');
 
     let myGame = setInterval(() => {
             gameEnemiesContainer.forEach(enemyColumn => {
+
                 const enemyColumnLeft = parseInt(enemyColumn.style.left.replace('%', ''));
                 const enemyColumnTop = parseInt(enemyColumn.style.top.replace('%', ''));
                 const aliens = document.querySelectorAll('.alien');
-                let player = document.querySelector('.tireur');
                 let playerTop = player.style.top.replace('%', '');
+                console.log(`playerTop = ${playerTop}`);
+
 
 
 
@@ -96,7 +104,7 @@ function initializeAliens() {
                                     moveToLeft = true;
                                 }, 50);
                             } else if (enemyColumnTop === 150) {
-                                enemyColumn.style.left = `22.5%`;
+                                enemyColumn.style.left = `20%`;
 
                             }
                         } else {
@@ -121,6 +129,7 @@ function initializeAliens() {
                             maxHeight = 85;
 
                             if (playerTop < maxHeight) {
+                                console.log('coucou')
                                 movePlayer('down')
                             }
 
@@ -131,14 +140,16 @@ function initializeAliens() {
                                 movePlayer('down')
                             }
 
-                            console.log(`Pour 100 : ${player.style.top}`)
+                            //console.log(`Pour 100 : ${player.style.top}`)
                         } else if (enemyColumnTop >= 80) {
+
                             maxHeight = 60;
                             if (playerTop < maxHeight) {
+
                                 movePlayer('down')
                             }
 
-                            console.log(`Pour 80 : ${player.style.top}`)
+                            //console.log(`Pour 80 : ${player.style.top}`)
                         }
 
 
@@ -215,7 +226,6 @@ function sendShoot() {
 }
 
 async function startScript(responseTime) {
-    maxHeight = 50;
     await initializeGame();
     console.log("Game initialized (" + (new Date().getTime() - responseTime) + "ms)");
     await initializeAliens();
@@ -418,6 +428,7 @@ document.addEventListener(`DOMContentLoaded`, (async) => {
                             document.querySelector('.grille').innerHTML += `<p class='message'>You win!</p>`;
 
                             levelDifficulty++;
+
                             if (delayTime > 400) {
                                 delayTime = (1000 - ((levelDifficulty - 1) * 20))
                             } else {
