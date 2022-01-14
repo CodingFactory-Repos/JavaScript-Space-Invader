@@ -9,6 +9,8 @@ music.loop = true;
 let musicPlayed = false;
 let delayTime = 1000;
 let playSound = true;
+let minHeight = 85;
+let maxHeight = 50;
 
 
 /*
@@ -70,87 +72,120 @@ function initializeAliens() {
     const gameEnemiesContainer = document.querySelectorAll('.enemy-column');
 
     let myGame = setInterval(() => {
-        gameEnemiesContainer.forEach(enemyColumn => {
-            const enemyColumnLeft = parseInt(enemyColumn.style.left.replace('%', ''));
-            const enemyColumnTop = parseInt(enemyColumn.style.top.replace('%', ''));
-            const aliens = document.querySelectorAll('.alien');
+            gameEnemiesContainer.forEach(enemyColumn => {
+                const enemyColumnLeft = parseInt(enemyColumn.style.left.replace('%', ''));
+                const enemyColumnTop = parseInt(enemyColumn.style.top.replace('%', ''));
+                const aliens = document.querySelectorAll('.alien');
+                let player = document.querySelector('.tireur');
+                let playerTop = player.style.top.replace('%', '');
 
 
 
-            if (!endGame) {
-                if (!stopAlien) {
-                    stopAlien = true;
-                    if (!moveToLeft) {
-                        if (enemyColumnLeft < 40) {
-                            enemyColumn.style.left = `${enemyColumnLeft + (1 * levelDifficulty)}%`;
-                        } else if (enemyColumnTop < 150) {
-                            enemyColumn.style.top = `${enemyColumnTop + 1}%`;
-                            enemyColumn.style.left = `${enemyColumnLeft}`;
-                            setTimeout(() => {
-                                moveToLeft = true;
-                            }, 50);
-                        } else if (enemyColumnTop === 150) {
-                            enemyColumn.style.left = `20%`;
 
+
+                if (!endGame) {
+                    if (!stopAlien) {
+                        stopAlien = true;
+                        if (!moveToLeft) {
+                            if (enemyColumnLeft < 40) {
+                                enemyColumn.style.left = `${enemyColumnLeft + (1 * levelDifficulty)}%`;
+                            } else if (enemyColumnTop < 150) {
+                                enemyColumn.style.top = `${enemyColumnTop + 1}%`;
+                                enemyColumn.style.left = `${enemyColumnLeft}`;
+                                setTimeout(() => {
+                                    moveToLeft = true;
+                                }, 50);
+                            } else if (enemyColumnTop === 150) {
+                                enemyColumn.style.left = `20%`;
+
+                            }
+                        } else {
+                            if (enemyColumnLeft > 0) {
+                                enemyColumn.style.left = `${enemyColumnLeft - (1 * levelDifficulty)}%`;
+                            } else if (enemyColumnTop < 150) {
+                                enemyColumn.style.top = `${enemyColumnTop + 1}%`;
+                                enemyColumn.style.left = `${enemyColumnLeft}`;
+                                setTimeout(() => {
+                                    moveToLeft = false;
+                                }, 50)
+                            } else if (enemyColumnTop >= 150) {
+                                enemyColumn.style.left = `22.5%`;
+                                setTimeout(() => {
+                                    endGame = true;
+                                }, 50);
+                            }
                         }
-                    } else {
-                        if (enemyColumnLeft > 0) {
-                            enemyColumn.style.left = `${enemyColumnLeft - (1 * levelDifficulty)}%`;
-                        } else if (enemyColumnTop < 150) {
-                            enemyColumn.style.top = `${enemyColumnTop + 1}%`;
-                            enemyColumn.style.left = `${enemyColumnLeft}`;
-                            setTimeout(() => {
-                                moveToLeft = false;
-                            }, 50)
-                        } else if (enemyColumnTop >= 150) {
-                            enemyColumn.style.left = `22.5%`;
-                            setTimeout(() => {
-                                endGame = true;
-                            }, 50);
+
+
+                        if (enemyColumnTop >= 130) {
+                            maxHeight = 85;
+
+                            if (playerTop < maxHeight) {
+                                movePlayer('down')
+                            }
+
+                        } else if (enemyColumnTop >= 100) {
+
+                            maxHeight = 70;
+                            if (playerTop < maxHeight) {
+                                movePlayer('down')
+                            }
+
+                            console.log(`Pour 100 : ${player.style.top}`)
+                        } else if (enemyColumnTop >= 80) {
+                            maxHeight = 60;
+                            if (playerTop < maxHeight) {
+                                movePlayer('down')
+                            }
+
+                            console.log(`Pour 80 : ${player.style.top}`)
                         }
+
+
+
+
+
+                        aliens.forEach(alien => {
+                            if (alien.style.opacity !== '0') {
+                                stopAlien = false;
+                            }
+                        });
+                    } else if (stopAlien) {
+
+                        enemyColumn.style.left = `${enemyColumnLeft}%`;
+                        enemyColumn.style.top = `${enemyColumnTop}%`;
+
+                        return;
                     }
 
+                } else if (!stopAlien && endGame) {
+                    clearInterval(myGame);
+                    if (!createBtn) {
+                        document.querySelector('.enemy-container').innerHTML = '';
+                        document.querySelector('.player-container').innerHTML = '';
+
+                        document.querySelector('.grille').innerHTML += `<p class='message'>Game over !</p>`;
 
 
 
-                    aliens.forEach(alien => {
-                        if (alien.style.opacity !== '0') {
-                            stopAlien = false;
-                        }
-                    });
-                } else if (stopAlien) {
+                        levelDifficulty = 1;
 
-                    enemyColumn.style.left = `${enemyColumnLeft}%`;
-                    enemyColumn.style.top = `${enemyColumnTop}%`;
-
-                    return;
+                        createRestartButton("Recommencer ?");
+                        createBtn = true;
+                        setTimeout(() => {
+                            let name = prompt('Enter your name')
+                            let score = document.querySelector('.score').innerHTML;
+                            scoreBoard(name, score);
+                        }, 1000);
+                    }
                 }
 
-            } else if (!stopAlien && endGame) {
-                clearInterval(myGame);
-                if (!createBtn) {
-                    document.querySelector('.enemy-container').innerHTML = '';
-                    document.querySelector('.player-container').innerHTML = '';
-
-                    document.querySelector('.grille').innerHTML += `<p class='message'>Game over !</p>`;
 
 
 
-                    levelDifficulty = 1;
-
-                    createRestartButton("Recommencer ?");
-                    createBtn = true;
-                    let name = prompt('Enter your name')
-                    let score = document.querySelector('.score').innerHTML;
-                    scoreBoard(name, score);
-                }
-            }
-
-
-
-
-        });
-    }, 50);
+            });
+        },
+        50);
 
 }
 
@@ -165,7 +200,7 @@ function sendShoot() {
     const playerTop = player.style.top;
 
     bullet.style.left = playerLeft;
-    bullet.style.bottom = 90 - parseInt(playerTop.replace('%', '')) + '%';
+    bullet.style.bottom = ((105 - parseInt(playerTop.replace('%', ''))) / 2) + '%';
     bullet.style.position = 'absolute';
 
     // Add the bullet to the game-frame div
@@ -188,6 +223,7 @@ async function startScript(responseTime) {
 function movePlayer(direction, responseTime) {
     const player = document.querySelector('.tireur');
     const playerLeft = parseInt(player.style.left.replace('%', ''));
+    const playerTop = parseInt(player.style.top.replace('%', ''));
     const speed = 5;
 
     if (direction === 'left') {
@@ -201,6 +237,17 @@ function movePlayer(direction, responseTime) {
             console.log("Player moved right (" + (new Date().getTime() - responseTime) + "ms)");
         }
     } else if (direction === 'up') {
+        if ((playerTop - speed) > (0 - speed) && playerTop > maxHeight) {
+            console.log(playerTop)
+            player.style.top = `${playerTop - speed}%`;
+            console.log("Player moved up (" + (new Date().getTime() - responseTime) + "ms)");
+        }
+    } else if (direction === 'down') {
+        if ((playerTop + speed) < 100 && playerTop < minHeight) {
+            player.style.top = `${playerTop + speed}%`;
+            console.log("Player moved down (" + (new Date().getTime() - responseTime) + "ms)");
+        }
+    } else if (direction === 'space') {
         sendShoot();
         // Play laser sound
         const laserSound = new Audio('ressources/Sounds/Laser.mp3');
@@ -232,21 +279,27 @@ function checkKey(e) {
 
     // Move the player if the key is pressed
     switch (e.keyCode) {
-        case 37:
-            movePlayer('left', new Date().getTime());
-            break;
-        case 38:
+        case 32:
             if (canShoot) {
                 console.log(delayTime)
-                movePlayer('up', new Date().getTime());
+                movePlayer('space', new Date().getTime());
                 canShoot = false;
                 setTimeout(() => {
                     canShoot = true;
                 }, delayTime);
             }
             break;
+        case 37:
+            movePlayer('left', new Date().getTime());
+            break;
         case 39:
             movePlayer('right', new Date().getTime());
+            break;
+        case 40:
+            movePlayer('down', new Date().getTime());
+            break;
+        case 38:
+            movePlayer('up', new Date().getTime());
             break;
         default:
             break;
