@@ -2,12 +2,12 @@
  * GLOBAL VARIABLES
  */
 let canShoot = true;
-let levelDifficulty = 3;
+let levelDifficulty = 1;
 const music = document.createElement('audio');
 music.src = 'ressources/Sounds/Music.mp3';
 music.loop = true;
 let musicPlayed = false;
-let delayTime = 100;
+let delayTime = 1000;
 let playSound = true;
 let minHeight = 85;
 let maxHeight = 50;
@@ -279,8 +279,9 @@ function scoreBoard(name, score) {
 function createScoreBoard() {
     const scoreBoard = document.createElement('div');
     scoreBoard.classList.add('score-board');
+
     scoreBoard.innerHTML =
-        `<div>
+        `<div id="scoreBoardTitle">
         <h2>Score Board :</h2>
     </div>`
     document.body.appendChild(scoreBoard);
