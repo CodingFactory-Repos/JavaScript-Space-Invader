@@ -3,6 +3,12 @@
  */
 let canShoot = true;
 let levelDifficulty = 1;
+const music = document.createElement('audio');
+music.src = 'ressources/Sounds/Music.mp3';
+music.loop = true;
+let musicPlayed = false;
+let delayTime = 1000;
+let playSound = true;
 
 
 /*
@@ -15,10 +21,13 @@ function initializeGame() {
     const gameEnemiesContainer = document.querySelector('.enemy-container');
     const gamePlayerContainer = document.querySelector('.player-container');
 
-    const music = document.createElement('audio');
-    music.src = 'ressources/Sounds/Music.mp3';
-    music.loop = true;
-    music.play();
+    if (musicPlayed = false) {
+        music.play();
+    } else {
+        music.pause();
+        music.currentTime = 0;
+        music.play();
+    }
 
     // Initialize the game
     // Show 3 lines of 12 enemys
@@ -125,10 +134,15 @@ function initializeAliens() {
 
                     document.querySelector('.grille').innerHTML += `<p class='message'>Game over !</p>`;
 
+
+
                     levelDifficulty = 1;
 
                     createRestartButton("Recommencer ?");
                     createBtn = true;
+                    let name = prompt('Enter your name')
+                    let score = document.querySelector('.score').innerHTML;
+                    scoreBoard(name, score);
                 }
             }
 
@@ -196,6 +210,24 @@ function movePlayer(direction, responseTime) {
 
 }
 
+function scoreBoard(name, score) {
+    // Add the score of the player to a scoreboard
+    const scoreBoard = document.querySelector('.score-board');
+    scoreBoard.innerHTML += `<p> ${name} Score : ${score}</p>`;
+
+
+}
+// Create a div score-board
+function createScoreBoard() {
+    const scoreBoard = document.createElement('div');
+    scoreBoard.classList.add('score-board');
+    scoreBoard.innerHTML =
+        `<div>
+        <h2>Score Board :</h2>
+    </div>`
+    document.body.appendChild(scoreBoard);
+}
+
 function checkKey(e) {
 
     // Move the player if the key is pressed
@@ -205,11 +237,12 @@ function checkKey(e) {
             break;
         case 38:
             if (canShoot) {
+                console.log(delayTime)
                 movePlayer('up', new Date().getTime());
                 canShoot = false;
                 setTimeout(() => {
                     canShoot = true;
-                }, 1000);
+                }, delayTime);
             }
             break;
         case 39:
@@ -243,6 +276,7 @@ function createRestartButton(text) {
 
 document.addEventListener(`DOMContentLoaded`, (async) => {
     startScript(new Date().getTime());
+    createScoreBoard();
     document.onkeydown = checkKey;
 
     const gameStartedAt = new Date().getTime();
@@ -250,7 +284,7 @@ document.addEventListener(`DOMContentLoaded`, (async) => {
     // Check if the restart button is clicked
     document.addEventListener('click', (e) => {
         if (e.target.classList.contains('restartBtn')) {
-            if(levelDifficulty === 1){
+            if (levelDifficulty === 1) {
                 const score = document.querySelector('.score-number');
                 score.innerHTML = `0`;
             }
@@ -299,7 +333,17 @@ document.addEventListener(`DOMContentLoaded`, (async) => {
 
                         // Play explosion sounds
                         const explosionSound = new Audio('ressources/Sounds/Explosion.mp3');
-                        explosionSound.play();
+                        if (delayTime > 610) {
+                            explosionSound.play();
+                        } else {
+                            if (playSound) {
+                                explosionSound.play();
+                                playSound = false;
+                                setTimeout(() => {
+                                    playSound = true;
+                                }, 1000);
+                            }
+                        }
 
 
                         // Check if all aliens are invisible
@@ -320,6 +364,11 @@ document.addEventListener(`DOMContentLoaded`, (async) => {
                             document.querySelector('.grille').innerHTML += `<p class='message'>You win!</p>`;
 
                             levelDifficulty++;
+                            if (delayTime > 400) {
+                                delayTime = (1000 - ((levelDifficulty - 1) * 20))
+                            } else {
+                                delayTime = 400;
+                            }
 
                             createRestartButton("Passer au niveau suivant");
                         }
@@ -334,7 +383,7 @@ document.addEventListener(`DOMContentLoaded`, (async) => {
                         const timeLeft = parseInt(bullet.style.bottom.replace('%', ''));
 
                         multiplier.innerHTML = `+${levelDifficulty * timeLeft} !`;
-                        score.innerHTML = (levelDifficulty * timeLeft) + scoreValue ;
+                        score.innerHTML = (levelDifficulty * timeLeft) + scoreValue;
                     }
                 });
             }

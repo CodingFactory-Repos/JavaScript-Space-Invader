@@ -180,3 +180,33 @@ h3 {
     font-weight: bold;
     text-shadow: 0 0 10px black;
 }
+
+
+/* Create a score board at the top left of the screen */
+
+.score-board {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 20%;
+    height: 80%;
+    display: flex;
+    flex-wrap: wrap;
+    background-color: rgba(0, 0, 0, 0.651);
+    color: rgb(97, 201, 0);
+    font-weight: bold;
+    text-shadow: 0 0 10px black;
+    margin: 0;
+}
+
+.score-board h2 {
+    font-size: 1.5em;
+}
+
+.score-board p {
+    position: absolute;
+    color: rgb(184, 184, 184);
+    top: 5%;
+    margin-top: 20px;
+    font-size: 1.5em;
+}
